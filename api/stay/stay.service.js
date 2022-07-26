@@ -21,7 +21,8 @@ async function query(filterBy) {
 async function getById(stayId) {
   try {
     const collection = await dbService.getCollection('stay')
-    const stay = collection.findOne({ _id: ObjectId(stayId) })
+    const stay = await collection.findOne({ '_id': stayId })
+
     return stay
   } catch (err) {
     logger.error(`while finding stay ${stayId}`, err)
