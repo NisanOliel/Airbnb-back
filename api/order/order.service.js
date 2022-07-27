@@ -61,6 +61,7 @@ async function add(order) {
     }
 }
 async function update(order) {
+    console.log('order22 service:', order)
     try {
         var id = ObjectId(order._id)
         delete order._id
