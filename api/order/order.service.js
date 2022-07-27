@@ -43,14 +43,14 @@ async function remove(orderId) {
 }
 
 function _formatDate(timestamp) {
-    return Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(timestamp)
+    timestampFormat = new Date(timestamp)
+    return Intl.DateTimeFormat('he', { year: 'numeric', month: 'numeric', day: 'numeric' }).format(timestampFormat)
 }
 
 async function add(order) {
     try {
-        console.log('order.startDate:', order.startDate)
-        order.startDate = _formatDate(Date.now(order.startDate))
-        order.endDate = _formatDate(Date.now(order.endDate))
+        order.startDate = _formatDate(order.startDate)
+        order.endDate = _formatDate(order.endDate)
 
         const collection = await dbService.getCollection('order')
         const addedOrder = await collection.insertOne(order)
