@@ -3,6 +3,7 @@ const logger = require('../services/logger.service')
 
 function requireAuth(req, res, next) {
   if (!req?.cookies?.loginToken) return res.status(401).send('Not Authenticated')
+  console.log("fsdfds");
   const loggedinUser = authService.validateToken(req.cookies.loginToken)
   if (!loggedinUser) return res.status(401).send('Not Authenticated')
   next()

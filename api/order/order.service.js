@@ -8,7 +8,6 @@ async function query() {
         // const sortCriteria = _buildSortCriteria(filterBy)
 
         const collection = await dbService.getCollection('order')
-        console.log('collection:', collection)
         let orders = await collection.find({}).toArray()
         // .sort(sortCriteria).toArray()
 
@@ -61,7 +60,6 @@ async function add(order) {
     }
 }
 async function update(order) {
-    console.log('order22 service:', order)
     try {
         var id = ObjectId(order._id)
         delete order._id
