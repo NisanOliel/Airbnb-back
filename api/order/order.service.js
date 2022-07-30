@@ -51,6 +51,7 @@ async function add(order) {
         order.startDate = _formatDate(order.startDate)
         order.endDate = _formatDate(order.endDate)
 
+        console.log('order:', order)
         const collection = await dbService.getCollection('order')
         const addedOrder = await collection.insertOne(order)
         return order

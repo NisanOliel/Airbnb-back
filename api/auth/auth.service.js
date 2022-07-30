@@ -18,10 +18,7 @@ async function login(username, password) {
     return user
 }
 
-// (async ()=>{
-//     await signup('bubu', '123', 'Bubu Bi')
-//     await signup('mumu', '123', 'Mumu Maha')
-// })()
+
 
 
 async function signup({ username, password, fullname, imgUrl, wishList }) {
