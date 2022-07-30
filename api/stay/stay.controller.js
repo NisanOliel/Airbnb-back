@@ -1,17 +1,17 @@
-const stayService = require("./stay.service.js");
-const logger = require("../../services/logger.service");
+const stayService = require('./stay.service.js');
+const logger = require('../../services/logger.service');
 
 // GET LIST
 async function getStays(req, res) {
   try {
     console.log(res.cookie);
-    logger.debug("Getting Stays");
+    logger.debug('Getting Stays');
     var queryParams = req.query;
     const stays = await stayService.query(queryParams);
     res.json(stays);
   } catch (err) {
-    logger.error("Failed to get stays", err);
-    res.status(500).send({ err: "Failed to get stays" });
+    logger.error('Failed to get stays', err);
+    res.status(500).send({ err: 'Failed to get stays' });
   }
 }
 
@@ -22,8 +22,8 @@ async function getStayById(req, res) {
     const stay = await stayService.getById(stayId);
     res.json(stay);
   } catch (err) {
-    logger.error("Failed to get stay", err);
-    res.status(500).send({ err: "Failed to get stay" });
+    logger.error('Failed to get stay', err);
+    res.status(500).send({ err: 'Failed to get stay' });
   }
 }
 
@@ -34,8 +34,8 @@ async function addStay(req, res) {
     const addedStay = await stayService.add(stay);
     return res.json(addedStay);
   } catch (err) {
-    logger.error("Failed to add stay", err);
-    res.status(500).send({ err: "Failed to add stay" });
+    logger.error('Failed to add stay', err);
+    res.status(500).send({ err: 'Failed to add stay' });
   }
 }
 
@@ -46,8 +46,8 @@ async function updateStay(req, res) {
     const updatedStay = await stayService.update(stay);
     res.json(updatedStay);
   } catch (err) {
-    logger.error("Failed to update stay", err);
-    res.status(500).send({ err: "Failed to update stay" });
+    logger.error('Failed to update stay', err);
+    res.status(500).send({ err: 'Failed to update stay' });
   }
 }
 
@@ -56,10 +56,10 @@ async function removeStay(req, res) {
   try {
     const stayId = req.params.id;
     await stayService.remove(stayId);
-    res.send("Removed");
+    res.send('Removed');
   } catch (err) {
-    logger.error("Failed to remove stay", err);
-    res.status(500).send({ err: "Failed to remove stay" });
+    logger.error('Failed to remove stay', err);
+    res.status(500).send({ err: 'Failed to remove stay' });
   }
 }
 
