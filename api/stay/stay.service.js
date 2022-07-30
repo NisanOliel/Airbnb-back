@@ -19,7 +19,6 @@ async function query(filterBy) {
 
 function _getFilteredStays(filterBy, stays) {
   const loc = filterBy?.location;
-  console.log('loc', loc);
   const deepStays = stays;
 
   const regex = new RegExp(loc, 'i');
@@ -41,7 +40,9 @@ function _getFilteredStays(filterBy, stays) {
         }
       case 'price':
         if (value) {
-          const { minPrice, maxPrice } = value;
+          const filyByPrice = JSON.parse(value)
+          const { minPrice, maxPrice } = filyByPrice;
+
           filters = filters.filter(stay => {
             return stay.price >= minPrice && stay.price <= maxPrice;
           });
@@ -74,7 +75,6 @@ function _getFilteredStays(filterBy, stays) {
         break;
     }
   }
-  console.log('filters getters', filters);
   return filters;
 }
 
