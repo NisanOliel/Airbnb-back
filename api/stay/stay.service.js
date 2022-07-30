@@ -19,29 +19,31 @@ async function query(filterBy) {
 
 function _getFilteredStays(filterBy, stays) {
   const loc = filterBy?.location;
-  const deepStays = stays;
+  // const deepStays = stays;
 
   const regex = new RegExp(loc, 'i');
-  let filters = deepStays;
+  let filters = stays;
   if (loc) {
-    console.log('regex', loc);
-    filters = deepStays.filter(stay => regex.test(stay.address.country) || regex.test(stay.address.city));
+    filters = stays.filter(stay => regex.test(stay.address.country) || regex.test(stay.address.city));
   }
   for (let key in filterBy) {
-    const value = filterBy[key];
+    let value = filterBy[key];
+    // value = JSON.parse(value)
     switch (key) {
       case 'bedrooms':
       case 'beds':
         if (value && value !== 'Any') {
+
           filters = filters.filter(stay => {
-            return stay[key] === value;
+            return stay[key] === +value;
           });
+
           break;
         }
       case 'price':
         if (value) {
-          const filyByPrice = JSON.parse(value)
-          const { minPrice, maxPrice } = filyByPrice;
+          const filteryByPrice = JSON.parse(value)
+          const { minPrice, maxPrice } = filteryByPrice;
 
           filters = filters.filter(stay => {
             return stay.price >= minPrice && stay.price <= maxPrice;
@@ -55,8 +57,8 @@ function _getFilteredStays(filterBy, stays) {
         break;
       case 'label':
         if (value) {
-          const filteredStays = filters.filter(stay => stay.propertyType.includes(value));
-          filters = filteredStays.length === 0 ? stays : filteredStays;
+          filters = filters.filter(stay => stay.propertyType.includes(value));
+          filters = filters.length === 0 ? stays : filters;
         }
         break;
       case 'amenities':
