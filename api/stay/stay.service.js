@@ -3,19 +3,42 @@ const logger = require('../../services/logger.service');
 const ObjectId = require('mongodb').ObjectId;
 
 async function query(filterBy) {
+  console.log('filterBy3123213:', filterBy)
+  const { location } = filterBy
+
   try {
+    // const filterCriteria = _buildFilterCriteria(filterBy)
     console.log('filter form bk', filterBy);
 
+
     const collection = await dbService.getCollection('stay');
-    let stays = await collection.find({}).toArray();
+    let stays = await collection.find({ "address.country": { $regex: location, $options: 'i' } })
+      .toArray();
     // .sort(sortCriteria).toArray()
 
-    return filterBy ? _getFilteredStays(filterBy, stays) : stays;
+    return stays
+    // return filterBy ? _getFilteredStays(filterBy, stays) : stays;
   } catch (err) {
     logger.error('cannot find stays', err);
     throw err;
   }
 }
+
+
+
+function _buildFilterCriteria(filterBy = { location: '' }) {
+  // const { location } = filterBy
+  // const criteria = {}
+  // if (location) criteria.address.country = { $regex: location, $options: 'i' }
+  // if (status) {
+  //   var inStock = status === 'In stock' ? true : false
+  //   criteria.inStock = { $eq: inStock }
+  // }
+  // if (byLabel) criteria.labels = { $in: byLabel }
+  return criteria
+}
+
+
 
 function _getFilteredStays(filterBy, stays) {
   const loc = filterBy?.location;
@@ -134,32 +157,3 @@ module.exports = {
   add,
   update,
 };
-
-function _buildFilterCriteria(filterBy = { txt: '', status: null, byLabel: '' }) {
-  const { txt, status, byLabel } = filterBy;
-  const criteria = {};
-  if (txt) criteria.name = { $regex: txt, $options: 'i' };
-  if (status) {
-    var inStock = status === 'In stock' ? true : false;
-    criteria.inStock = { $eq: inStock };
-  }
-  if (byLabel) criteria.labels = { $in: byLabel };
-  return criteria;
-}
-
-function _buildSortCriteria({ bySort = '' }) {
-  let sort = bySort.split(' - ');
-  let criteria = {};
-  switch (sort[0]) {
-    case 'Name':
-      criteria.name = sort[1] === 'Increasing' ? 1 : -1;
-      break;
-    case 'price':
-      criteria.price = sort[1] === 'Increasing' ? 1 : -1;
-      break;
-    case 'Created':
-      criteria.createdAt = sort[1] === 'Increasing' ? 1 : -1;
-      break;
-  }
-  return criteria;
-}
