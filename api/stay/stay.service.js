@@ -4,16 +4,15 @@ const ObjectId = require('mongodb').ObjectId;
 
 async function query(filterBy) {
   console.log('filterBy3123213:', filterBy)
-  const { location } = filterBy
+  // const { location } = filterBy
 
   try {
-    // const filterCriteria = _buildFilterCriteria(filterBy)
+    const filterCriteria = _buildFilterCriteria(filterBy)
     console.log('filter form bk', filterBy);
 
 
     const collection = await dbService.getCollection('stay');
-    let stays = await collection.find({ "address.country": { $regex: location, $options: 'i' } })
-      .toArray();
+    let stays = await collection.find(filterCriteria).toArray()
     // .sort(sortCriteria).toArray()
 
     return stays
@@ -26,15 +25,36 @@ async function query(filterBy) {
 
 
 
-function _buildFilterCriteria(filterBy = { location: '' }) {
-  // const { location } = filterBy
-  // const criteria = {}
-  // if (location) criteria.address.country = { $regex: location, $options: 'i' }
-  // if (status) {
-  //   var inStock = status === 'In stock' ? true : false
-  //   criteria.inStock = { $eq: inStock }
+function _buildFilterCriteria(filterBy) {
+  if (!Object.values(filterBy).length) return
+  console.log('filterBy88:', filterBy)
+  const { location, price, bedrooms, beds, propertyType, amenities, hostLanguage, hostID } = filterBy
+  console.log('propertyType:', propertyType)
+  const jsonPrice = JSON.parse(price)
+  // const jsonBedrooms = JSON.parse(bedrooms)
+  // console.log('jsonBedrooms:', jsonBedrooms)
+  // const jsonBeds = JSON.parse(beds)
+  let criteria = {}
+  // if (location) {
+  //   criteria =
+  //     { $or: [{ "address.country": { $regex: "Spait", $options: 'i' } }, { "address.city": { $regex: "Barcelona", $options: 'i' } }] }
   // }
-  // if (byLabel) criteria.labels = { $in: byLabel }
+
+
+  if (location) criteria["address.country"] = { $regex: location, $options: 'i' }
+  // if (location) criteria["address.city"] = { $regex: location, $options: 'i' }
+
+  if (jsonPrice) criteria.price = { '$gt': jsonPrice.minPrice, '$lt': jsonPrice.maxPrice }
+  if (bedrooms) criteria.bedrooms = +bedrooms
+  if (beds) criteria.beds = +beds
+
+  if (propertyType) criteria.propertyType = { $in: propertyType }
+
+  if (amenities) criteria["amenities.name"] = { $in: amenities }
+  if (hostLanguage) criteria["host.hostLanguage"] = { $in: hostLanguage }
+
+  if (hostID) criteria["host._id"] = hostID
+
   return criteria
 }
 
