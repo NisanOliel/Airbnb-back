@@ -10,7 +10,6 @@ async function query(filterBy) {
     let stays = await collection.find(filterCriteria).toArray();
 
     return stays;
-    // return filterBy ? _getFilteredStays(filterBy, stays) : stays;
   } catch (err) {
     logger.error('cannot find stays', err);
     throw err;
@@ -26,13 +25,10 @@ function _buildFilterCriteria(filterBy) {
   }
 
   let criteria = {};
-  // if (location) {
-  //   criteria =
-  //     { $or: [{ "address.country": { $regex: "Spait", $options: 'i' } }, { "address.city": { $regex: "Barcelona", $options: 'i' } }] }
-  // }
 
-  if (location) criteria['address.country'] = { $regex: location, $options: 'i' };
-  // if (location) criteria["address.city"] = { $regex: location, $options: 'i' }
+  if (location) {
+    criteria = { $or: [{ ['address.country']: { $regex: location, $options: 'i' } }, { ['address.city']: { $regex: location, $options: 'i' } }] };
+  }
 
   if (jsonPrice) criteria['price'] = { $gt: jsonPrice.minPrice, $lt: jsonPrice.maxPrice };
   if (bedrooms) criteria.bedrooms = +bedrooms;
