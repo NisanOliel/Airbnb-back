@@ -5,7 +5,7 @@
           aria-hidden="true"
           role="presentation"
           focusable="false"
-          style="display: block;; height: 12px; width: 12px; stroke: white; stroke-width: 5.33333; overflow: visible"
+          style="display: block;; height: 12px; width: 12px; stroke: white; stroke-width: 5; overflow: visible"
         >
           <g fill="none">
             <path
