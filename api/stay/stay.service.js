@@ -3,28 +3,27 @@ const logger = require('../../services/logger.service');
 const ObjectId = require('mongodb').ObjectId;
 
 async function query(filterBy) {
-  console.log('filterBy3123213:', filterBy)
-  const { location } = filterBy
+  console.log('filterBy3123213:', filterBy);
 
   try {
     // const filterCriteria = _buildFilterCriteria(filterBy)
     console.log('filter form bk', filterBy);
 
-
+    // const deepStays = stays;
+    const { location } = filterBy;
+    const regex = new RegExp(location, 'i');
+    console.log('regex', regex);
     const collection = await dbService.getCollection('stay');
-    let stays = await collection.find({ "address.country": { $regex: location, $options: 'i' } })
-      .toArray();
+    let stays = await collection.find({ 'address.country': { $regex: regex } }).toArray();
     // .sort(sortCriteria).toArray()
 
-    return stays
+    return stays;
     // return filterBy ? _getFilteredStays(filterBy, stays) : stays;
   } catch (err) {
     logger.error('cannot find stays', err);
     throw err;
   }
 }
-
-
 
 function _buildFilterCriteria(filterBy = { location: '' }) {
   // const { location } = filterBy
@@ -35,10 +34,8 @@ function _buildFilterCriteria(filterBy = { location: '' }) {
   //   criteria.inStock = { $eq: inStock }
   // }
   // if (byLabel) criteria.labels = { $in: byLabel }
-  return criteria
+  return criteria;
 }
-
-
 
 function _getFilteredStays(filterBy, stays) {
   const loc = filterBy?.location;
@@ -56,7 +53,6 @@ function _getFilteredStays(filterBy, stays) {
       case 'bedrooms':
       case 'beds':
         if (value && value !== 'Any') {
-
           filters = filters.filter(stay => {
             return stay[key] === +value;
           });
@@ -65,7 +61,7 @@ function _getFilteredStays(filterBy, stays) {
         }
       case 'price':
         if (value) {
-          const filteryByPrice = JSON.parse(value)
+          const filteryByPrice = JSON.parse(value);
           const { minPrice, maxPrice } = filteryByPrice;
 
           filters = filters.filter(stay => {
