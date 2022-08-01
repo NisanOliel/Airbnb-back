@@ -18,14 +18,12 @@ async function query(filterBy) {
 
 function _buildFilterCriteria(filterBy) {
   if (!Object.values(filterBy).length) return;
-  console.log('filterBy88:', filterBy);
   const { location, price, bedrooms, beds, propertyType, amenities, hostLanguage, hostID } = filterBy;
   if (price) {
     var jsonPrice = JSON.parse(price);
   }
 
   let criteria = {};
-
   if (location) {
     criteria = { $or: [{ ['address.country']: { $regex: location, $options: 'i' } }, { ['address.city']: { $regex: location, $options: 'i' } }] };
   }
@@ -44,67 +42,6 @@ function _buildFilterCriteria(filterBy) {
   return criteria;
 }
 
-function _getFilteredStays(filterBy, stays) {
-  const loc = filterBy?.location;
-  // const deepStays = stays;
-
-  const regex = new RegExp(loc, 'i');
-  let filters = stays;
-  if (loc) {
-    filters = stays.filter(stay => regex.test(stay.address.country) || regex.test(stay.address.city));
-  }
-  for (let key in filterBy) {
-    let value = filterBy[key];
-    // value = JSON.parse(value)
-    switch (key) {
-      case 'bedrooms':
-      case 'beds':
-        if (value && value !== 'Any') {
-          filters = filters.filter(stay => {
-            return stay[key] === +value;
-          });
-
-          break;
-        }
-      case 'price':
-        if (value) {
-          const filteryByPrice = JSON.parse(value);
-          const { minPrice, maxPrice } = filteryByPrice;
-
-          filters = filters.filter(stay => {
-            return stay.price >= minPrice && stay.price <= maxPrice;
-          });
-        }
-        break;
-      case 'propertyType':
-        if (value.length > 0) {
-          filters = filters.filter(stay => value.includes(stay.propertyType));
-        }
-        break;
-      case 'label':
-        if (value) {
-          filters = filters.filter(stay => stay.propertyType.includes(value));
-          filters = filters.length === 0 ? stays : filters;
-        }
-        break;
-      case 'amenities':
-        if (value.length > 0) {
-          filters = filters.filter(stay => {
-            return stay.amenities.find(amenity => value.includes(amenity.name));
-          });
-        }
-        break;
-      case 'hostLanguage':
-        if (value.length > 0) {
-          filters = filters.filter(stay => value.includes(stay.host.hostLanguage));
-        }
-        break;
-      default:
-        break;
-    }
-  }
-  return filters;
-}
 
 async function getById(stayId) {
   try {
