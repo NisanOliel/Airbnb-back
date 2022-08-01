@@ -3,6 +3,7 @@ const logger = require('../../services/logger.service');
 const ObjectId = require('mongodb').ObjectId;
 
 async function query(filterBy) {
+  console.log('filterBy:', filterBy)
   try {
     const filterCriteria = _buildFilterCriteria(filterBy);
 
@@ -31,8 +32,10 @@ function _buildFilterCriteria(filterBy) {
   }
 
   if (jsonPrice) criteria['price'] = { $gt: jsonPrice.minPrice, $lt: jsonPrice.maxPrice };
-  if (bedrooms) criteria.bedrooms = +bedrooms;
-  if (beds) criteria.beds = +beds;
+
+
+  if (beds !== 'Any') criteria.beds = +beds;
+  if (bedrooms !== 'Any') criteria.bedrooms = +bedrooms;
 
   if (propertyType) criteria.propertyType = { $in: propertyType };
 
