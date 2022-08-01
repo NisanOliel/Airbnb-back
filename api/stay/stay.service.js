@@ -30,7 +30,10 @@ function _buildFilterCriteria(filterBy) {
   console.log('filterBy88:', filterBy)
   const { location, price, bedrooms, beds, propertyType, amenities, hostLanguage, hostID } = filterBy
   console.log('propertyType:', propertyType)
-  const jsonPrice = JSON.parse(price)
+  if (price) {
+    const jsonPrice = JSON.parse(price)
+    console.log('jsonPrice:', jsonPrice)
+  }
   // const jsonBedrooms = JSON.parse(bedrooms)
   // console.log('jsonBedrooms:', jsonBedrooms)
   // const jsonBeds = JSON.parse(beds)
@@ -44,7 +47,7 @@ function _buildFilterCriteria(filterBy) {
   if (location) criteria["address.country"] = { $regex: location, $options: 'i' }
   // if (location) criteria["address.city"] = { $regex: location, $options: 'i' }
 
-  if (jsonPrice) criteria.price = { '$gt': jsonPrice.minPrice, '$lt': jsonPrice.maxPrice }
+  if (jsonPrice) criteria["price"] = { '$gt': jsonPrice.minPrice, '$lt': jsonPrice.maxPrice }
   if (bedrooms) criteria.bedrooms = +bedrooms
   if (beds) criteria.beds = +beds
 
