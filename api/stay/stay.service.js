@@ -3,56 +3,46 @@ const logger = require('../../services/logger.service');
 const ObjectId = require('mongodb').ObjectId;
 
 async function query(filterBy) {
-
   try {
-    const filterCriteria = _buildFilterCriteria(filterBy)
+    const filterCriteria = _buildFilterCriteria(filterBy);
 
     const collection = await dbService.getCollection('stay');
-    let stays = await collection.find(filterCriteria).toArray()
+    let stays = await collection.find(filterCriteria).toArray();
 
-    return stays
-    // return filterBy ? _getFilteredStays(filterBy, stays) : stays;
+    return stays;
   } catch (err) {
     logger.error('cannot find stays', err);
     throw err;
   }
 }
 
-
-
 function _buildFilterCriteria(filterBy) {
-  if (!Object.values(filterBy).length) return
-  console.log('filterBy88:', filterBy)
-  const { location, price, bedrooms, beds, propertyType, amenities, hostLanguage, hostID } = filterBy
+  if (!Object.values(filterBy).length) return;
+  console.log('filterBy88:', filterBy);
+  const { location, price, bedrooms, beds, propertyType, amenities, hostLanguage, hostID } = filterBy;
   if (price) {
-    var jsonPrice = JSON.parse(price)
+    var jsonPrice = JSON.parse(price);
   }
 
-  let criteria = {}
-  // if (location) {
-  //   criteria =
-  //     { $or: [{ "address.country": { $regex: "Spait", $options: 'i' } }, { "address.city": { $regex: "Barcelona", $options: 'i' } }] }
-  // }
+  let criteria = {};
 
+  if (location) {
+    criteria = { $or: [{ ['address.country']: { $regex: location, $options: 'i' } }, { ['address.city']: { $regex: location, $options: 'i' } }] };
+  }
 
-  if (location) criteria["address.country"] = { $regex: location, $options: 'i' }
-  // if (location) criteria["address.city"] = { $regex: location, $options: 'i' }
+  if (jsonPrice) criteria['price'] = { $gt: jsonPrice.minPrice, $lt: jsonPrice.maxPrice };
+  if (bedrooms) criteria.bedrooms = +bedrooms;
+  if (beds) criteria.beds = +beds;
 
-  if (jsonPrice) criteria["price"] = { '$gt': jsonPrice.minPrice, '$lt': jsonPrice.maxPrice }
-  if (bedrooms) criteria.bedrooms = +bedrooms
-  if (beds) criteria.beds = +beds
+  if (propertyType) criteria.propertyType = { $in: propertyType };
 
-  if (propertyType) criteria.propertyType = { $in: propertyType }
+  if (amenities) criteria['amenities.name'] = { $in: amenities };
+  if (hostLanguage) criteria['host.hostLanguage'] = { $in: hostLanguage };
 
-  if (amenities) criteria["amenities.name"] = { $in: amenities }
-  if (hostLanguage) criteria["host.hostLanguage"] = { $in: hostLanguage }
+  if (hostID) criteria['host._id'] = hostID;
 
-  if (hostID) criteria["host._id"] = hostID
-
-  return criteria
+  return criteria;
 }
-
-
 
 function _getFilteredStays(filterBy, stays) {
   const loc = filterBy?.location;
@@ -70,7 +60,6 @@ function _getFilteredStays(filterBy, stays) {
       case 'bedrooms':
       case 'beds':
         if (value && value !== 'Any') {
-
           filters = filters.filter(stay => {
             return stay[key] === +value;
           });
@@ -79,7 +68,7 @@ function _getFilteredStays(filterBy, stays) {
         }
       case 'price':
         if (value) {
-          const filteryByPrice = JSON.parse(value)
+          const filteryByPrice = JSON.parse(value);
           const { minPrice, maxPrice } = filteryByPrice;
 
           filters = filters.filter(stay => {
