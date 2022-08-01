@@ -3,17 +3,12 @@ const logger = require('../../services/logger.service');
 const ObjectId = require('mongodb').ObjectId;
 
 async function query(filterBy) {
-  console.log('filterBy3123213:', filterBy)
-  // const { location } = filterBy
 
   try {
     const filterCriteria = _buildFilterCriteria(filterBy)
-    console.log('filter form bk', filterBy);
-
 
     const collection = await dbService.getCollection('stay');
     let stays = await collection.find(filterCriteria).toArray()
-    // .sort(sortCriteria).toArray()
 
     return stays
     // return filterBy ? _getFilteredStays(filterBy, stays) : stays;
@@ -29,14 +24,10 @@ function _buildFilterCriteria(filterBy) {
   if (!Object.values(filterBy).length) return
   console.log('filterBy88:', filterBy)
   const { location, price, bedrooms, beds, propertyType, amenities, hostLanguage, hostID } = filterBy
-  console.log('propertyType:', propertyType)
   if (price) {
-    const jsonPrice = JSON.parse(price)
-    console.log('jsonPrice:', jsonPrice)
+    var jsonPrice = JSON.parse(price)
   }
-  // const jsonBedrooms = JSON.parse(bedrooms)
-  // console.log('jsonBedrooms:', jsonBedrooms)
-  // const jsonBeds = JSON.parse(beds)
+
   let criteria = {}
   // if (location) {
   //   criteria =
